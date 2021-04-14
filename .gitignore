@@ -7,3 +7,5 @@ logs/ #log files
 Config.dat
 *.project #Eclipse project file
 *.pydevproject #Eclipse pydev project file
+.pydevproject
+.project
