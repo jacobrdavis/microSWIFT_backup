@@ -1,0 +1,29 @@
+#! /bin/bash 
+
+### BEGIN INIT INFO
+# Provides:          recTempAtBoot
+# Required-start:    $all
+# Required-stop:     $all
+# Default-Start:     2 3 4 5 
+# Default-Stop:      0 1 6  
+# Short-Description: 
+# Description: 
+### END INIT INFO 
+#sleep 20
+
+tempDir=/home/pi/microSWIFT/sensors
+
+case "$1" in
+	start)
+		echo "Starting to record temp data"
+		cd $tempDir
+		./runRecTemp
+		;;
+	stop)
+		echo "stopping recording temp data"
+		killall recTempAtBoot
+		;;
+	*)
+		echo "Usage: /etc/init.d/recTempAtBoot start|stop"
+		;;
+esac

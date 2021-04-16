@@ -1,0 +1,30 @@
+#! /bin/bash 
+
+### BEGIN INIT INFO
+# Provides:          recSaveGPSAtBoot
+# Required-start:    $all
+# Required-stop:     $all
+# Default-Start:     2 3 4 5 
+# Default-Stop:      0 1 6  
+# Short-Description: 
+# Description: 
+### END INIT INFO 
+#sleep 20
+
+GPSwavesDir=/home/pi/microSWIFT/GPSwaves
+case "$1" in 
+        start)
+                echo "Starting recordGPS service"
+                cd $GPSwavesDir
+                ./recordGPS
+                ;;
+#        stop)
+#                echo "stopping recordGPS service"
+#                killall recordGPS
+#                ;;
+        *)
+                echo "Usage: /etc/init.d/recordGPS start|stop" 
+                ;;
+esac 
+
+

@@ -1,0 +1,27 @@
+#! /bin/bash 
+
+### BEGIN INIT INFO
+# Provides:          recIMUAtBoot
+# Required-start:    $all
+# Required-stop:     $all
+# Default-Start:     2 3 4 5 
+# Default-Stop:      0 1 6  
+# Short-Description: 
+# Description: 
+### END INIT INFO 
+#sleep 20
+imuDir=/home/pi/microSWIFT/sensors
+case "$1" in
+	start)
+		echo "Starting to record IMU data"
+		cd $imuDir
+		./runRecIMU
+		;;
+	stop)
+		echo "stopping recording IMU data"
+		killall recIMUAtBoot
+		;;
+	*)
+		echo "Usage: /etc/init.d/recIMUAtBoot start|stop" 
+		;;
+esac

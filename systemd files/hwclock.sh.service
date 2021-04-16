@@ -1,0 +1,21 @@
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Documentation=man:systemd-sysv-generator(8)
+SourcePath=/etc/init.d/hwclock.sh
+Description=LSB: Start hwclock
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+TimeoutSec=infinity
+WatchdogSec=3600
+KillMode=process
+GuessMainPID=no
+RemainAfterExit=no
+SuccessExitStatus=5 6
+ExecStart=/etc/init.d/hwclock.sh start
+ExecStop=/etc/init.d/hwclock.sh stop
