@@ -69,7 +69,7 @@ if __name__ == '__main__':
     
     #temperature parameters
     temp_interval = config.getFloat('Temp', 'interval')
-    temp_samples = int(burst_seconds/rec_interval)
+    temp_samples = int(burst_seconds/temp_interval)
     CLK  = config.getInt('Temp', 'CLK')
     MISO = config.getInt('Temp', 'MISO')
     MOSI = config.getInt('Temp', 'MOSI')
@@ -77,14 +77,9 @@ if __name__ == '__main__':
     
     #voltage parameters   
     volt_interval = config.getInt('Voltage', 'interval')
-     
-    voltFreq=config.getInt('Voltage', 'voltFreq')
-    numSamplesConst=config.getInt('System', 'numSamplesConst')
-    voltNumSamples = voltFreq*numSamplesConst
+    volt_samples = int(burst_seconds/volt_interval)
     shuntOhms=config.getFloat('Voltage', 'shuntOhms')
     maxExpectedAmps=config.getFloat('Voltage', 'maxExpectedAmps')
-    recRate = config.getInt('Voltage', 'recRate')
-    recInterval = 1./recRate
     
 
     #set up logging
