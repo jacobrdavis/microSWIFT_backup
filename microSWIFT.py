@@ -81,14 +81,13 @@ if __name__ == '__main__':
     shuntOhms=config.getFloat('Voltage', 'shuntOhms')
     maxExpectedAmps=config.getFloat('Voltage', 'maxExpectedAmps')
     
-
     #set up logging
     LOG_LEVEL = config.getString('Loggers', 'DefaultLogLevel')
     #format log messages (example: 2020-11-23 14:31:00,578, recordGPS - info - this is a log message)
     #NOTE: TIME IS SYSTEM TIME
     LOG_FORMAT = ('%(asctime)s, %(filename)s - [%(levelname)s] - %(message)s')
     #log file name (example: home/pi/microSWIFT/recordGPS_23Nov2020.log)
-    LOG_FILE = (logDir + '/' + 'microSWIFT' + '_' + datetime.strftime(datetime.now(), '%d%b%Y') + '.log')
+    LOG_FILE = (logDir + '/' + 'microSWIFT' + floatID + '_' + datetime.strftime(datetime.now(), '%d%b%Y') + '.log')
     logger = getLogger('system_logger')
     logger.setLevel(LOG_LEVEL)
     logFileHandler = FileHandler(LOG_FILE)
@@ -96,8 +95,10 @@ if __name__ == '__main__':
     logFileHandler.setFormatter(Formatter(LOG_FORMAT))
     logger.addHandler(logFileHandler)
     
-    logger.info("---------------recordGPS.py------------------")
+    logger.info("---------------microSWIFT.py------------------")
     logger.info('python version {}'.format(sys.version))
+    
+    
     
 
 
