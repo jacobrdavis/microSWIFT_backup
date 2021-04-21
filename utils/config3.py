@@ -73,7 +73,7 @@ class Config:
         stringObj = StringIO(''.join(combined_sections))
 
         # Save the config object
-        self.config = configparser.SafeConfigParser()
+        self.config = configparser.ConfigParser()
         self.config.readfp(stringObj)
 
         return True
