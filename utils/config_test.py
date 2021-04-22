@@ -18,3 +18,5 @@ print(cfg.sections())
 #ok = cfg.loadFile(configFile)
 
 
+print(cfg.items('Loggers'))
+print(cfg.__dict__)

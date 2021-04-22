@@ -74,7 +74,7 @@ class Config:
 
         # Save the config object
         self.config = configparser.ConfigParser()
-        self.config.readfp(stringObj)
+        self.config.read(stringObj)
 
         return True
 
