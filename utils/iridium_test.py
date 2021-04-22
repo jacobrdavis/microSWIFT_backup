@@ -30,8 +30,10 @@ if __name__=='__main__':
             
             while time.time() < tend:
                 qual = send_sbd.sig_qual(ser)
-                datafile.write(qual + '\r')
+                datafile.write(qual + ' ' + str(datetime.utcnow()) + '\r')
+#                datafile.write(qual + '\r')
                 print('signal quality = {}'.format(qual))
+                print('Time = {}'.format(str(datetime.utcnow())))
                 time.sleep(1)
                 
         
