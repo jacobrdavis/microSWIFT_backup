@@ -4,14 +4,28 @@ import sys
 
 sys.path.append('C:\\Users\\Alex de Klerk\\Documents\\GitHub\\microSWIFT\\utils\\')
 
-import config3
 import configparser
 
 configFile='C:\\Users\\Alex de Klerk\\Documents\\GitHub\\microSWIFT\\config.dat'
 
 cfg=configparser.ConfigParser()
 cfg.read(configFile)
-print(cfg.sections())
+
+sections = cfg.sections()
+print(sections)
+for name in sections:
+    print(cfg.options(name))
+    
+class microSWIFT:
+    
+    def __init__(self):
+        return 
+    
+    
+    
+
+
+
 
 #cfg = config3.Config() # Create object and load file
 #
@@ -19,4 +33,3 @@ print(cfg.sections())
 
 
 print(cfg.items('Loggers'))
-print(cfg.__dict__)

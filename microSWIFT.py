@@ -58,6 +58,11 @@ if __name__ == '__main__':
     gps_freq = config.getInt('GPS', 'GPS_frequency') #currently not used, hardcoded at 4 Hz (see init_gps function)
     gps_samples = gps_freq*burst_seconds
     gps_timeout = config.getInt('GPS','timeout')
+    
+    #IMU parameters
+    imuFreq=config.getInt('IMU', 'imuFreq')
+    imu_samples = imuFreq*burst_seconds
+    imu_gpio=config.getInt('IMU', 'imu_gpio')
    
     #Iridium parameters 
     modem_port = config.getString('Iridium', 'port')
