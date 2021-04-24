@@ -110,6 +110,7 @@ if __name__ == '__main__':
     
     
     
-
+    #create IMU object and initialize
+    fxos, fxas = init_imu()
 
 
