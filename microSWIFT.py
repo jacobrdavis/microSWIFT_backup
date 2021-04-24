@@ -111,6 +111,13 @@ if __name__ == '__main__':
     
     
     #create IMU object and initialize
-    fxos, fxas = init_imu()
-
+    fxos, fxas = IMU.init_imu()
+    
+    #record burst
+    ax,ay,az,gx,gy,gz,mx,my,mz = IMU.record_burst(fxos,fxas)
+    
+    #process results
+    IMU_results = process_IMU(ax,ay,az,gx,gy,gz,mx,my,mz)
+    
+    
 

@@ -91,7 +91,7 @@ isample = 0
         
         fxos, fxas = init_imu()
         
-def record_burst():        
+def record_burst(fxos,fxas):        
         
     logger.info('starting burst')
     
@@ -117,18 +117,28 @@ def record_burst():
         while time.time() <= t_end or isample < imu_samples:
     
             try:
-                ax, ay, az = fxos.accelerometer
-                mx, my, mz = fxos.magnetometer
-                gx, gy, gz = fxas.gyroscope
+                axi, ayi, azi = fxos.accelerometer
+                mxi, myi, mzi = fxos.magnetometer
+                gxi, gyi, gzi = fxas.gyroscope
             except Exception as e:
                 logger.info(e)
                 logger.info('error reading IMU data')
      
             timestamp='{:%Y-%m-%d %H:%M:%S}'.format(datetime.utcnow())
 
-            imu_out.write('%s,%f,%f,%f,%f,%f,%f,%f,%f,%f\n' %(timestamp,ax,ay,az,mx,my,mz,gx,gy,gz))
+            imu_out.write('%s,%f,%f,%f,%f,%f,%f,%f,%f,%f\n' %(timestamp,axi,ayi,azi,mxi,myi,mzi,gxi,gyi,gzi))
             imu_out.flush()
-    
+            
+            ax[isample]=axi
+            ay[isample]=ayi
+            az[isample]=azi
+            gx[isample]=gxi
+            gy[isample]=gyi
+            gz[isample]=gzi
+            mx[isample]=mxi
+            my[isample]=myi
+            mz[isample]=mzi
+                
             isample = isample + 1
             
             if isample == imu_samples:
@@ -146,4 +156,5 @@ def record_burst():
         #turn imu off     
         GPIO.output(imu_gpio,GPIO.LOW)
         logger.info('power down IMU')
-
+        
+    return ax,ay,az,gx,gy,gz,mx,my,mz
