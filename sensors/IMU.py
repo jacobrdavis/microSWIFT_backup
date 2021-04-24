@@ -86,66 +86,55 @@ def init_imu():
 # and print them out.
 imu = np.empty(imu_samples)
 isample = 0
-
-
-tStart = time.time()
-#-------------------------------------------------------------------------------
-#LOOP BEGINS
-#-------------------------------------------------------------------------------
-logger.info('---------------recordIMU.py------------------')
-while True:
     
     
     now=datetime.utcnow()
     if  now.minute == burst_time or now.minute % burst_interval == 0 and now.second == 0:
         
-        logger.info('initializing IMU')
         fxos, fxas = init_imu()
-        logger.info('IMU initialized')
         
-        logger.info('starting burst')
+def record_burst():        
         
-        #create new file for new burst interval 
-        fname = dataDir + 'microSWIFT'+ floatID + '_IMU_'+'{:%d%b%Y_%H%M%SUTC.dat}'.format(datetime.utcnow())
-        logger.info('file name: %s' %fname)
-             
-        with open(fname, 'w',newline='\n') as imu_out:
-            logger.info('open file for writing: %s' %fname)
-            t_end = time.time() + burst_seconds #get end time for burst
-            isample=0
-            while time.time() <= t_end or isample < imu_samples:
-        
-                try:
-                    accel_x, accel_y, accel_z = fxos.accelerometer
-                    mag_x, mag_y, mag_z = fxos.magnetometer
-                    gyro_x, gyro_y, gyro_z = fxas.gyroscope
-                except Exception as e:
-                    logger.info(e)
-                    logger.info('error reading IMU data')
-         
-                timestamp='{:%Y-%m-%d %H:%M:%S}'.format(datetime.utcnow())
-
-                imu_out.write('%s,%f,%f,%f,%f,%f,%f,%f,%f,%f\n' %(timestamp,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z,gyro_x,gyro_y,gyro_z))
-                imu_out.flush()
-        
-                isample = isample + 1
-                
-                if isample == imu_samples:
-                    break
-                elif time.time() >= t_end and 0 < imu_samples-isample <= 40:
-                    continue
-                elif time.time() > t_end and imu_samples-isample > 40:
-                    break
-                
-                #hard coded sleep to control recording rate. NOT ideal but works for now    
-                sleep(0.23)
-            
-            logger.info('end burst')
-            logger.info('IMU samples %s' %isample)  
-            #turn imu off     
-            GPIO.output(imu_gpio,GPIO.LOW)
-            logger.info('power down IMU')
-            
-
+    logger.info('starting burst')
     
-    sleep(.50)
+    #create new file for new burst interval 
+    fname = dataDir + 'microSWIFT'+ floatID + '_IMU_'+'{:%d%b%Y_%H%M%SUTC.dat}'.format(datetime.utcnow())
+    logger.info('file name: %s' %fname)
+         
+    with open(fname, 'w',newline='\n') as imu_out:
+        logger.info('open file for writing: %s' %fname)
+        t_end = time.time() + burst_seconds #get end time for burst
+        isample=0
+        while time.time() <= t_end or isample < imu_samples:
+    
+            try:
+                accel_x, accel_y, accel_z = fxos.accelerometer
+                mag_x, mag_y, mag_z = fxos.magnetometer
+                gyro_x, gyro_y, gyro_z = fxas.gyroscope
+            except Exception as e:
+                logger.info(e)
+                logger.info('error reading IMU data')
+     
+            timestamp='{:%Y-%m-%d %H:%M:%S}'.format(datetime.utcnow())
+
+            imu_out.write('%s,%f,%f,%f,%f,%f,%f,%f,%f,%f\n' %(timestamp,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z,gyro_x,gyro_y,gyro_z))
+            imu_out.flush()
+    
+            isample = isample + 1
+            
+            if isample == imu_samples:
+                break
+            elif time.time() >= t_end and 0 < imu_samples-isample <= 40:
+                continue
+            elif time.time() > t_end and imu_samples-isample > 40:
+                break
+            
+            #hard coded sleep to control recording rate. NOT ideal but works for now    
+            sleep(0.23)
+        
+        logger.info('end burst')
+        logger.info('IMU samples %s' %isample)  
+        #turn imu off     
+        GPIO.output(imu_gpio,GPIO.LOW)
+        logger.info('power down IMU')
+
