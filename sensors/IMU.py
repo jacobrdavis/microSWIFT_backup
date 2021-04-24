@@ -81,9 +81,7 @@ def init_imu():
 # default is 2G, but you can use 4G or 8G values):
 #sensor = adafruit_fxos8700.FXOS8700(i2c, accel_range=adafruit_fxos8700.ACCEL_RANGE_4G)
 #sensor = adafruit_fxos8700.FXOS8700(i2c, accel_range=adafruit_fxos8700.ACCEL_RANGE_8G)
- 
-# Main loop will read the acceleration and magnetometer values every second
-# and print them out.
+
 imu = np.empty(imu_samples)
 isample = 0
     
@@ -97,6 +95,17 @@ def record_burst():
         
     logger.info('starting burst')
     
+    #create arrays for IMU data
+    ax = np.full(imu_samples, badValue)
+    ay = np.full(imu_samples, badValue)
+    az = np.full(imu_samples, badValue)
+    gx = np.full(imu_samples, badValue)
+    gy = np.full(imu_samples, badValue)
+    gz = np.full(imu_samples, badValue)
+    mx = np.full(imu_samples, badValue)
+    my = np.full(imu_samples, badValue)
+    mz = np.full(imu_samples, badValue)
+      
     #create new file for new burst interval 
     fname = dataDir + 'microSWIFT'+ floatID + '_IMU_'+'{:%d%b%Y_%H%M%SUTC.dat}'.format(datetime.utcnow())
     logger.info('file name: %s' %fname)
@@ -108,16 +117,16 @@ def record_burst():
         while time.time() <= t_end or isample < imu_samples:
     
             try:
-                accel_x, accel_y, accel_z = fxos.accelerometer
-                mag_x, mag_y, mag_z = fxos.magnetometer
-                gyro_x, gyro_y, gyro_z = fxas.gyroscope
+                ax, ay, az = fxos.accelerometer
+                mx, my, mz = fxos.magnetometer
+                gx, gy, gz = fxas.gyroscope
             except Exception as e:
                 logger.info(e)
                 logger.info('error reading IMU data')
      
             timestamp='{:%Y-%m-%d %H:%M:%S}'.format(datetime.utcnow())
 
-            imu_out.write('%s,%f,%f,%f,%f,%f,%f,%f,%f,%f\n' %(timestamp,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z,gyro_x,gyro_y,gyro_z))
+            imu_out.write('%s,%f,%f,%f,%f,%f,%f,%f,%f,%f\n' %(timestamp,ax,ay,az,mx,my,mz,gx,gy,gz))
             imu_out.flush()
     
             isample = isample + 1
