@@ -87,7 +87,7 @@ modemGPIO=16
 #interval of call (minutes)
 call_interval=60
 #time of call (minute past the hour) 
-call_time=10
+call_time=50
 timeout=80 
 #========================== GPS Parameters ========================
 [GPS]

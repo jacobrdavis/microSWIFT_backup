@@ -253,6 +253,46 @@ if __name__ == "__main__":
 	#call function to initialize GPS
 	ser, gps_initialized, time, date = init_gps()
 	
+	
+	
+	if not gps_initialized:
+		logger.info("GPS not initialized, exiting")
+		sys.exit(1)
+	
+	
+	
+	now = datetime.utcnow()
+	
+	while True:
+		#am I in a telemetry window?
+		if now.minute >= call_time and now.minute <= burst_time:
+			#we are in the telemetry window, do not start recording
+			sleep(0.25)
+			continue
+		else:
+			logger.info("starting burst")
+			#create file name
+			fname = dataDir + floatID + '_GPS_'+"{:%d%b%Y_%H%M%SUTC.dat}".format(datetime.utcnow())
+			logger.info("file name: %s" %fname)
+			#call record_gps	
+			u,v,z,lat,lon = record_gps(ser,fname)
+	
+			#check if file was created and if it is > 0 bytes
+			try:
+			    if os.path.isfile(fname) and os.path.getsize(fname) > 0:
+			    	#call data processing script
+			    	logger.info('starting to process data')
+			    	process_data.main(u,v,z,lat,lon)
+			    else:
+			    	logger.info('data file does not exist or does not contain enough data for processing')	
+			
+			except OSError as e:
+				logger.info(e)
+				sys.exit(1)
+	
+	
+	
+	
 	if gps_initialized:
 		logger.info('waiting for burst start')
 		while True:
@@ -268,7 +308,7 @@ if __name__ == "__main__":
 				u,v,z,lat,lon = record_gps(ser,fname)
 				
 				
-				#check if burst completed with 2048 poi
+				#check if burst completed with 2048 points
 				try:
 				    if os.path.isfile(fname) and os.path.getsize(fname) > 0:
 				    	#call data processing script
