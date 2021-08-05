@@ -120,7 +120,7 @@ def recordIMU(configFilename):
     bad = config.getInt('System', 'badValue')
 
     #IMU parameters
-    imuFreq=config.getFloat('IMU', 'imuFreq')
+    imuFreq=config.getFloat('IMU', 'imu_frequency')
     imu_samples = imuFreq*burst_seconds
     imu_gpio=config.getInt('IMU', 'imu_gpio')
 
