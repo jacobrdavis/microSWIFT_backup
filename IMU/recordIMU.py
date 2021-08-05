@@ -24,7 +24,7 @@ import IMU.adafruit_fxos8700_microSWIFT
 import IMU.adafruit_fxas21002c_microSWIFT
 
 
-def recordIMU(end_time):
+def recordIMU(configFilename):
     ## --------- Define Initialize Function --------------
     def init():
         #initialize fxos and fxas devices (required after turning off device)
