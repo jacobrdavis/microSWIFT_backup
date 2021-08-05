@@ -90,8 +90,8 @@ if __name__ == "__main__":
 					recordIMU_future = executor.submit(recordIMU, end_time)
 			
 			        # get results from Futures
-			        GPSdataFilename = recordGPS_future.result()
-			        IMUdataFilename = recordIMU_future.result()
+			     	GPSdataFilename = recordGPS_future.result()
+			     	IMUdataFilename = recordIMU_future.result()
 	
 				## --------------- Data Processing Section ---------------------------------
 				# Time processing section
