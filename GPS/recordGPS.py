@@ -19,7 +19,7 @@ import RPi.GPIO as GPIO
 # Import microSWIFT specific information
 from utils.config3 import Config
 
-def recordGPS(configFilename):
+def recordGPS(end_time):
     print('GPS recording...')
 
     ## -------- Define Initialize function ------------
