@@ -70,7 +70,7 @@ print('end times', end_times)
 
 	
  # Start time of loop iteration
-begin_script_time = datetime.datetime.now()
+begin_script_time = datetime.now()
 print('Starting up')
 	
 #Run following code unless importing as a module
@@ -96,7 +96,7 @@ if __name__ == "__main__":
 	
 				## --------------- Data Processing Section ---------------------------------
 				# Time processing section
-				begin_processing_time = datetime.datetime.now()
+				begin_processing_time = datetime.now()
 				
 				# Run processGPS
 				# Compute u, v and z from raw GPS data
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 				volt = 0
 				
 				# End Timing of recording
-				print('Processing section took', datetime.datetime.now() - begin_processing_time)
+				print('Processing section took', datetime.now() - begin_processing_time)
 				
 				# Run processIMU
 				    # IMU data:
@@ -136,7 +136,7 @@ if __name__ == "__main__":
 				sendSBD(payload_data, configFilename)
 				
 				# End Timing of entire Script
-				print('microSWIFT.py took', datetime.datetime.now() - begin_script_time)
+				print('microSWIFT.py took', datetime.now() - begin_script_time)
 				
 			else:
 				continue
