@@ -50,7 +50,7 @@ burst_seconds = config.getInt('System', 'burst_seconds')
 burst_time = config.getInt('System', 'burst_time')
 burst_int = config.getInt('System', 'burst_interval')
 #Compute number of bursts per hour
-num_bursts = int(60 / burst_interval)
+num_bursts = int(60 / burst_int)
 
 #GPS parameters
 gps_fs = config.getInt('GPS', 'gps_frequency') #currently not used, hardcoded at 4 Hz (see init_gps function)
@@ -59,10 +59,10 @@ gps_fs = config.getInt('GPS', 'gps_frequency') #currently not used, hardcoded at
 imu_fs = config.getFloat('IMU', 'imu_frequency')
 
 #Compute number of bursts per hour
-num_bursts = int(60 / burst_interval)
+num_bursts = int(60 / burst_int)
 
 #Generate lists of burst start and end times based on parameters from Config file
-start_times = [burst_time + i*burst_interval for i in range(num_bursts)]
+start_times = [burst_time + i*burst_int for i in range(num_bursts)]
 end_times = [start_times[i] + burst_seconds/60 for i in range(num_bursts)] #could also use lambda
 print('start times', start_times)
 print('end times', end_times)
