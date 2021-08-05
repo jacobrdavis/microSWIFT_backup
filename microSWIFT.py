@@ -103,7 +103,7 @@ if __name__ == "__main__":
 				u, v, z, lat, lon = GPStoUVZ(GPSdataFilename)
 				
 				# Compute Wave Statistics from GPSwaves algorithm
-				Hs, Tp, Dp, E, f, a1, b1, a2, b2 = GPSwaves(u, v, z, GPS_fs)
+				Hs, Tp, Dp, E, f, a1, b1, a2, b2 = GPSwaves(u, v, z, gps_fs)
 				
 				# Compute mean velocities, elevation, lat and lon
 				u_mean = np.mean(u)
