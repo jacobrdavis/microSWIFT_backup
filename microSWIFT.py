@@ -12,6 +12,7 @@ and IMU as well as schedules the processing scripts after they are done recordin
 import concurrent.futures
 import datetime
 import numpy as np
+import os, sys
 
 # Import GPS functions
 from GPS.recordGPS import recordGPS
