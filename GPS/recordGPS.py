@@ -83,103 +83,105 @@ logger.info('float ID: {0}, payload type: {1}, sensors type: {2}, '.format(float
 logger.info('burst seconds: {0}, burst interval: {1}, burst time: {2}'.format(burst_seconds, burst_int, burst_time))
 logger.info('gps sample rate: {0}, call interval {1}, call time: {2}'.format(gps_freq, call_int, call_time))
 
+## -------- Define Initialize function ------------
+def init():
+	nmea_time=''
+	nmea_date=''
+	#set GPS enable pin high to turn on and start acquiring signal
+	GPIO.output(gpsGPIO,GPIO.HIGH)
+	
+	logger.info('initializing GPS')
+	try:
+		#start with GPS default baud whether it is right or not
+		logger.info("try GPS serial port at 9600")
+		ser=serial.Serial(gps_port,startBaud,timeout=1)
+		try:
+			#set device baud rate to 115200
+			logger.info("setting baud rate to 115200 $PMTK251,115200*1F\r\n")
+			ser.write('$PMTK251,115200*1F\r\n'.encode())
+			sleep(1)
+			#switch ser port to 115200
+			ser.baudrate=baud
+			logger.info("switching to %s on port %s" % (baud, gps_port))
+			#set output sentence to GPGGA and GPVTG, plus GPRMC once every 4 positions (See GlobalTop PMTK command packet PDF)
+			logger.info('setting NMEA output sentence $PMTK314,0,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*2C\r\n')
+			ser.write('$PMTK314,0,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*2C\r\n'.encode())
+			sleep(1)
+			#set interval to 250ms (4 Hz)
+			logger.info("setting GPS to 4 Hz rate $PMTK220,250*29\r\n")
+			ser.write("$PMTK220,250*29\r\n".encode())
+			sleep(1)
+		except Exception as e:
+			return ser, False, nmea_time, nmea_date
+			logger.info("error setting up serial port")
+			logger.info(e)
+	except Exception as e:
+		return ser, False, nmea_time, nmea_date
+		logger.info("error opening serial port")
+		logger.info(e)
+					
+	#read lines from GPS serial port and wait for fix
+	try:
+		#loop until timeout dictated by gps_timeout value (seconds)
+		timeout=t.time() + gps_timeout
+		while t.time() < timeout:
+			ser.flushInput()
+			ser.read_until('\n'.encode())
+			newline=ser.readline().decode('utf-8')
+			logger.info(newline)
+			if not 'GPGGA' in newline:
+				newline=ser.readline().decode('utf-8')
+				if 'GPGGA' in newline:
+					logger.info('found GPGGA sentence')
+					logger.info(newline)
+					gpgga=pynmea2.parse(newline,check=True)
+					logger.info('GPS quality= %d' % gpgga.gps_qual)
+					#check gps_qual value from GPGGS sentence. 0=invalid,1=GPS fix,2=DGPS fix
+					if gpgga.gps_qual > 0:
+						logger.info('GPS fix acquired')
+						#get date and time from GPRMC sentence - GPRMC reported only once every 8 lines
+						for i in range(8):
+							newline=ser.readline().decode('utf-8')
+							if 'GPRMC' in newline:
+								logger.info('found GPRMC sentence')
+								try:
+									gprmc=pynmea2.parse(newline)
+									nmea_time=gprmc.timestamp
+									nmea_date=gprmc.datestamp
+									logger.info("nmea time: %s" %nmea_time)
+									logger.info("nmea date: %s" %nmea_date)
+									
+									#set system time
+									try:
+										logger.info("setting system time from GPS: %s %s" %(nmea_date, nmea_time))
+										os.system('sudo timedatectl set-timezone UTC')
+										os.system('sudo date -s "%s %s"' %(nmea_date, nmea_time))
+										os.system('sudo hwclock -w')
+										
+										logger.info("GPS initialized")
+										return ser, True, nmea_time, nmea_date
+									except Exception as e:
+										logger.info(e)
+										logger.info('error setting system time')
+										continue	
+								except Exception as e:
+									logger.info(e)
+									logger.info('error parsing nmea sentence')
+									continue
+						#return False if gps fix but time not set	
+						return ser, False, nmea_time, nmea_date
+			sleep(1)
+		#return False if loop is allowed to timeout
+		return ser, False, nmea_time, nmea_date
+	except Exception as e:
+		logger.info(e)
+		return ser, False, nmea_time, nmea_date
+
 
 def recordGPS(configFilename):
     print('GPS recording...')
 
-    ## -------- Define Initialize function ------------
-    def init():
-        nmea_time=''
-        nmea_date=''
-        #set GPS enable pin high to turn on and start acquiring signal
-        GPIO.output(gpsGPIO,GPIO.HIGH)
-        
-        logger.info('initializing GPS')
-        try:
-            #start with GPS default baud whether it is right or not
-            logger.info("try GPS serial port at 9600")
-            ser=serial.Serial(gps_port,startBaud,timeout=1)
-            try:
-                #set device baud rate to 115200
-                logger.info("setting baud rate to 115200 $PMTK251,115200*1F\r\n")
-                ser.write('$PMTK251,115200*1F\r\n'.encode())
-                sleep(1)
-                #switch ser port to 115200
-                ser.baudrate=baud
-                logger.info("switching to %s on port %s" % (baud, gps_port))
-                #set output sentence to GPGGA and GPVTG, plus GPRMC once every 4 positions (See GlobalTop PMTK command packet PDF)
-                logger.info('setting NMEA output sentence $PMTK314,0,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*2C\r\n')
-                ser.write('$PMTK314,0,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*2C\r\n'.encode())
-                sleep(1)
-                #set interval to 250ms (4 Hz)
-                logger.info("setting GPS to 4 Hz rate $PMTK220,250*29\r\n")
-                ser.write("$PMTK220,250*29\r\n".encode())
-                sleep(1)
-            except Exception as e:
-                return ser, False, nmea_time, nmea_date
-                logger.info("error setting up serial port")
-                logger.info(e)
-        except Exception as e:
-            return ser, False, nmea_time, nmea_date
-            logger.info("error opening serial port")
-            logger.info(e)
-                        
-        #read lines from GPS serial port and wait for fix
-        try:
-            #loop until timeout dictated by gps_timeout value (seconds)
-            timeout=t.time() + gps_timeout
-            while t.time() < timeout:
-                ser.flushInput()
-                ser.read_until('\n'.encode())
-                newline=ser.readline().decode('utf-8')
-                logger.info(newline)
-                if not 'GPGGA' in newline:
-                    newline=ser.readline().decode('utf-8')
-                    if 'GPGGA' in newline:
-                        logger.info('found GPGGA sentence')
-                        logger.info(newline)
-                        gpgga=pynmea2.parse(newline,check=True)
-                        logger.info('GPS quality= %d' % gpgga.gps_qual)
-                        #check gps_qual value from GPGGS sentence. 0=invalid,1=GPS fix,2=DGPS fix
-                        if gpgga.gps_qual > 0:
-                            logger.info('GPS fix acquired')
-                            #get date and time from GPRMC sentence - GPRMC reported only once every 8 lines
-                            for i in range(8):
-                                newline=ser.readline().decode('utf-8')
-                                if 'GPRMC' in newline:
-                                    logger.info('found GPRMC sentence')
-                                    try:
-                                        gprmc=pynmea2.parse(newline)
-                                        nmea_time=gprmc.timestamp
-                                        nmea_date=gprmc.datestamp
-                                        logger.info("nmea time: %s" %nmea_time)
-                                        logger.info("nmea date: %s" %nmea_date)
-                                        
-                                        #set system time
-                                        try:
-                                            logger.info("setting system time from GPS: %s %s" %(nmea_date, nmea_time))
-                                            os.system('sudo timedatectl set-timezone UTC')
-                                            os.system('sudo date -s "%s %s"' %(nmea_date, nmea_time))
-                                            os.system('sudo hwclock -w')
-                                            
-                                            logger.info("GPS initialized")
-                                            return ser, True, nmea_time, nmea_date
-                                        except Exception as e:
-                                            logger.info(e)
-                                            logger.info('error setting system time')
-                                            continue	
-                                    except Exception as e:
-                                        logger.info(e)
-                                        logger.info('error parsing nmea sentence')
-                                        continue
-                            #return False if gps fix but time not set	
-                            return ser, False, nmea_time, nmea_date
-                sleep(1)
-            #return False if loop is allowed to timeout
-            return ser, False, nmea_time, nmea_date
-        except Exception as e:
-            logger.info(e)
-            return ser, False, nmea_time, nmea_date
+
 
     ## -------- Define Record Function ----------------
     def record(ser,fname):
