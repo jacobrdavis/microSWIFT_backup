@@ -178,7 +178,7 @@ def init():
 		return ser, False, nmea_time, nmea_date
 
 
-def recordGPS(configFilename):
+def recordGPS(end_time):
     print('GPS recording...')
 
 
@@ -194,7 +194,10 @@ def recordGPS(configFilename):
                 t_end = t.time() + burst_seconds #get end time for burst
                 ipos=0
                 ivel=0
-                while t.time() <= t_end or ipos < gps_samples or ivel < gps_samples:
+                
+                now = datetime.utcnow().minute + datetime.utcnow().second/60
+
+                while now < end_time:
                     newline=ser.readline().decode()
                     gps_out.write(newline)
                     gps_out.flush()

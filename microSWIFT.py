@@ -87,8 +87,8 @@ if __name__ == "__main__":
 				# Run recordGPS.py and recordIMU.py concurrently with asynchronous futures
 				with concurrent.futures.ThreadPoolExecutor() as executor:
 					# Submit Futures
-					recordGPS_future = executor.submit(recordGPS, configFilename)
-					recordIMU_future = executor.submit(recordIMU, configFilename)
+					recordGPS_future = executor.submit(recordGPS, end_time)
+					recordIMU_future = executor.submit(recordIMU, end_time)
 			
 					# get results from Futures
 					GPSdataFilename = recordGPS_future.result()

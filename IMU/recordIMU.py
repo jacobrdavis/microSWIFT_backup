@@ -24,7 +24,7 @@ import IMU.adafruit_fxos8700_microSWIFT
 import IMU.adafruit_fxas21002c_microSWIFT
 
 
-def recordIMU(configFilename):
+def recordIMU(end_time:
     ## --------- Define Initialize Function --------------
     def init():
         #initialize fxos and fxas devices (required after turning off device)
@@ -50,7 +50,10 @@ def recordIMU(configFilename):
             logger.info('open file for writing: %s' %IMUdataFilename)
             t_end = time.time() + burst_seconds #get end time for burst
             isample=0
-            while isample < imu_samples:
+            
+			now = datetime.utcnow().minute + datetime.utcnow().second/60
+
+			while now < end_time:
                 # Get values from IMU
                 try:
                     accel_x, accel_y, accel_z = fxos.accelerometer
