@@ -68,7 +68,26 @@ end_times = [start_times[i] + burst_seconds/60 for i in range(num_bursts)] #coul
 print('start times', start_times)
 print('end times', end_times)
 
-	
+
+#set up logging
+logger = getLogger('microSWIFT')
+logDir = config.getString('Loggers', 'logDir')
+LOG_LEVEL = config.getString('Loggers', 'DefaultLogLevel')
+LOG_FORMAT = ('%(asctime)s, %(name)s - [%(levelname)s] - %(message)s')
+LOG_FILE = (logDir  + '%(name)s' + '.log')
+logger.setLevel(LOG_LEVEL)
+logFileHandler = FileHandler(LOG_FILE)
+logFileHandler.setLevel(LOG_LEVEL)
+logFileHandler.setFormatter(Formatter(LOG_FORMAT))
+logger.addHandler(logFileHandler)
+
+#Output configuration parameters to log file
+logger.info('microSWIFT configuration:')
+logger.info('float ID: {0}, payload type: {1}, sensors type: {2}, '.format(floatID, payload_type, sensor_type))
+logger.info('burst seconds: {0}, burst interval: {1}, burst time: {2}'.format(burst_seconds, burst_int, burst_time))
+logger.info('gps sample rate: {0}, call interval {1}, call time: {2}'.format(gps_freq, call_int, call_time))
+
+
  # Start time of loop iteration
 begin_script_time = datetime.now()
 print('Starting up')

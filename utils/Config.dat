@@ -32,7 +32,7 @@
 # ========================== Logging Parameters =================
 [Loggers]
 #where to put logs
-logDir=/home/pi/microSWIFT/logs/ 
+logDir=/home/pi/microSWIFT/
 
 # Set the default logging level.
 # This is used in any module which does not specify a level
