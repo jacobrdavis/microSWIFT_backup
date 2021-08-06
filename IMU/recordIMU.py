@@ -23,6 +23,8 @@ from utils.config3 import Config
 import IMU.adafruit_fxos8700_microSWIFT
 import IMU.adafruit_fxas21002c_microSWIFT
 
+#Set up module level logger
+logger = getLogger('microSWIFT.'+__name__) 
 
 def recordIMU(end_time:
     ## --------- Define Initialize Function --------------
