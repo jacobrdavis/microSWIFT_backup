@@ -69,7 +69,7 @@ print('start times', start_times)
 print('end times', end_times)
 
 
-#set up logging
+#set up logging based on config file parameters
 logger = getLogger('microSWIFT')
 logDir = config.getString('Loggers', 'logDir')
 LOG_LEVEL = config.getString('Loggers', 'DefaultLogLevel')
