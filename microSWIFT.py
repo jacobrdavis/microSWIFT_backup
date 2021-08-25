@@ -50,6 +50,7 @@ payload_type = config.getInt('System', 'payloadType')
 burst_seconds = config.getInt('System', 'burst_seconds')
 burst_time = config.getInt('System', 'burst_time')
 burst_int = config.getInt('System', 'burst_interval')
+
 #Compute number of bursts per hour
 num_bursts = int(60 / burst_int)
 
@@ -59,8 +60,6 @@ gps_fs = config.getInt('GPS', 'gps_frequency') #currently not used, hardcoded at
 #IMU parameters
 imu_fs = config.getFloat('IMU', 'imu_frequency')
 
-#Compute number of bursts per hour
-num_bursts = int(60 / burst_int)
 
 #Generate lists of burst start and end times based on parameters from Config file
 start_times = [burst_time + i*burst_int for i in range(num_bursts)]
