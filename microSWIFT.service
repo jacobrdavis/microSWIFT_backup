@@ -2,7 +2,7 @@
 WantedBy=multi-user.target
 
 [Unit]
-Description=microSWIFT service
+Description=microSWIFT wave buoy
 Documentation=https://github.com/alexdeklerk/microSWIFT/blob/main/README.md 
 
 
