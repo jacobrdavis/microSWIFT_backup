@@ -36,7 +36,8 @@ configFilename = r'utils/Config.dat'
 config = Config() # Create object and load file
 ok = config.loadFile( configFilename )
 if( not ok ):
-	logger.info ('Error loading config file: "%s"' % configFilename)
+	#Needs to be changed to raise exception, logger not set up yet
+	#logger.info ('Error loading config file: "%s"' % configFilename)
 	sys.exit(1)
 
 #System parameters
