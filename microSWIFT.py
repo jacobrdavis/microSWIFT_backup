@@ -67,15 +67,21 @@ if __name__=="__main__":
     numCoef = config.getInt('System', 'numCoef')
     port = config.getInt('System', 'port')
     payload_type = config.getInt('System', 'payloadType')
-    burst_seconds = config.getInt('System', 'burst_seconds')
-    burst_time = config.getInt('System', 'burst_time')
-    burst_int = config.getInt('System', 'burst_interval')
     
     # GPS parameters
     GPS_fs = config.getInt('GPS', 'gps_frequency') #currently not used, hardcoded at 4 Hz (see init_gps function)
 
     # IMU parameters
     IMU_fs = config.getFloat('IMU', 'imuFreq')
+
+    # Sampling interval Parameters
+    burst_seconds = config.getInt('System', 'burst_seconds')
+    burst_time = config.getInt('System', 'burst_time')
+    burst_int = config.getInt('System', 'burst_interval')
+    num_bursts = int(60 / burst_int)
+    start_times = [burst_time + i*burst_int for i in range(num_bursts)]
+    end_times = [start_times[i] + burst_seconds/60 for i in range(num_bursts)]
+
 
     # Set-up logging based on config file parameters
     logger = getLogger('microSWIFT')
