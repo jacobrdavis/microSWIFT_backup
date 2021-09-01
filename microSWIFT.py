@@ -116,7 +116,8 @@ if __name__=="__main__":
 	# --------------- Main Loop -------------------------
 	while True:
 
-		now = datetime.utcnow().minute + datetime.utcnow().second/60
+		now = datetime.utcnow()
+		current_min = datetime.utcnow().minute + datetime.utcnow().second/60
 		begin_script_time = datetime.now()
 
 		## -------------- GPS and IMU Recording Section ---------------------------
@@ -128,12 +129,16 @@ if __name__=="__main__":
 
 
 		for i in np.arange(len(start_times)):
-			if now >= start_times[i] and now < end_times[i]: #Are we in a record window
+			if current_min >= start_times[i] and current_min < end_times[i]: #Are we in a record window
 
 				# Start time of loop iteration
 				logger.info('----------- Iteration {} -----------'.format(loop_count))
 				
 				end_time = end_times[i]
+
+				# Define next start time to enter into the sendSBD function:
+				next_start = now + timedelta(minutes=burst_int)
+				
 				# Run recordGPS.py and recordIMU.py concurrently with asynchronous futures
 				with concurrent.futures.ThreadPoolExecutor() as executor:
 					# Submit Futures 
@@ -146,8 +151,7 @@ if __name__=="__main__":
 				#exit out of loop once burst is finished
 				recording_complete = True
 
-				# Define next start time to enter into the sendSBD function:
-				next_start = start_times[i+1]
+				
 				break
 
 		if recording_complete == True: 
