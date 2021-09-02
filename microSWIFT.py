@@ -83,10 +83,9 @@ if __name__=="__main__":
 	#Compute number of bursts per hour
 	num_bursts = int(60 / burst_int)
 	
-
 	#Generate lists of burst start and end times based on parameters from Config file
 	start_times = [burst_time + i*burst_int for i in range(num_bursts)]
-	end_times = [start_times[i] + burst_seconds/60 for i in range(num_bursts)] #could also use lambda
+	end_times = [start_times[i] + burst_seconds/60 for i in range(num_bursts)]
 
 	# Set-up logging based on config file parameters
 	logger = getLogger('microSWIFT')
@@ -113,7 +112,6 @@ if __name__=="__main__":
 	# Define loop counter
 	loop_count = 1
 	wait_count = 0
-	
 
 	# --------------- Main Loop -------------------------
 	while True:
@@ -129,7 +127,6 @@ if __name__=="__main__":
 		# Both IMU and GPS start as unititialized
 		recording_complete = False
 
-
 		for i in np.arange(len(start_times)):
 			if current_min >= start_times[i] and current_min < end_times[i]: #Are we in a record window
 
@@ -144,12 +141,13 @@ if __name__=="__main__":
 				# Run recordGPS.py and recordIMU.py concurrently with asynchronous futures
 				with concurrent.futures.ThreadPoolExecutor() as executor:
 					# Submit Futures 
-					recordGPS_future = executor.submit(recordGPS, end_time)
-					recordIMU_future = executor.submit(recordIMU, end_time)
+					recordGPS_future = executor.submit(recordGPS, end_times[i])
+					recordIMU_future = executor.submit(recordIMU, end_times[i])
 
 					# get results from Futures
 					GPSdataFilename, gps_initialized = recordGPS_future.result()
 					IMUdataFilename, imu_initialized = recordIMU_future.result()
+
 				#exit out of loop once burst is finished
 				recording_complete = True
 
