@@ -95,7 +95,7 @@ def GPSwaves(u, v, z, fs):
         b1 = 999 * np.ones(42)
         a2 = 999 * np.ones(42)
         b2 = 999 * np.ones(42)
-        check = 999
+        check = 999 * np.ones(42)
         # Return values and exit
         return Hs, Tp, Dp, E, f, a1, b1, a2, b2, check
 
@@ -344,8 +344,6 @@ def GPSwaves(u, v, z, fs):
     b2 = np.delete(b2, ind_to_delete)
     check = np.delete(check, ind_to_delete)
     f = np.delete(f, ind_to_delete)
-
-    logger.info('Hs = {}, Tp ={}, Dp = {}, E {}, f = {}, a1 = {}, b1 = {}, a2 = {}, b2 = {}, check = {}'. format( Hs, Tp, Dp, E, f, a1, b1, a2, b2, check))
-
+    
     # Return values
     return Hs, Tp, Dp, E, f, a1, b1, a2, b2, check
