@@ -566,7 +566,7 @@ def send_microSWIFT_51(payload_data, timeout):
                 else:   
                     id+=1
 
-                # Final print statement that it sent
+                # Final print statement that it  sent
                 logger.info('Sent SBD successfully')      
                 #turn off modem
                 logger.info('Powering down modem')    
