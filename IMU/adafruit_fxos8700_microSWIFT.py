@@ -133,8 +133,13 @@ class FXOS8700:
         #=======================MICROSWIFT SETTINGS====================
         # High resolution
         self._write_u8(_FXOS8700_REGISTER_CTRL_REG2, 0x02)
+        
         # Active, Normal Mode, Low Noise, 25Hz in Hybrid Mode
-        self._write_u8(_FXOS8700_REGISTER_CTRL_REG1, 0x25)
+        # self._write_u8(_FXOS8700_REGISTER_CTRL_REG1, 0x25) # 0010 0101
+
+        # Active, Normal Mode, Low Noise, 100Hz in Hybrid Mode (ODR halved)
+        self._write_u8(_FXOS8700_REGISTER_CTRL_REG1, 0x15) # 0001 0101
+
         # Configure the magnetometer
         # Hybrid Mode, Over Sampling Rate = 16
         self._write_u8(_FXOS8700_REGISTER_MCTRL_REG1, 0x1F)

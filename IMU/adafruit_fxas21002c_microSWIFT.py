@@ -85,9 +85,11 @@ GYRO_RANGE_1000DPS  = 1000
 GYRO_RANGE_2000DPS  = 2000
 # pylint: enable=bad-whitespace
 
-ctrl_reg0 = 0x1C #0001 1100: LPF cutoff 4Hz @ ODR=12.5Hz, HPF cutoff 0.031Hz, HPF enable
-ctrl_reg1 = 0x1E #0001 1110: ODR=12.5Hz, Active mode (Table 45 of documentation)
+# ctrl_reg0 = 0x1C #0001 1100: LPF cutoff 4Hz @ ODR=12.5Hz, HPF cutoff 0.031Hz, HPF enable
+# ctrl_reg1 = 0x1E #0001 1110: ODR=12.5Hz, Active mode (Table 45 of documentation)
 
+ctrl_reg0 = 0x80 #1000 0000: LPF cutoff 4Hz @ ODR=50 Hz: BW = [1 0]; SPI interface: SPIW = [0] (default); HPF cutoff: SEL = [0 0]; disable HPF: HPF_EN = [0]; full scale range sel: FS = [0 0] 
+ctrl_reg1 = 0x12 #0001 0010: ODR=50Hz, Active mode (Table 45 of documentation)
 
 class FXAS21002C:
     """Driver for the NXP FXAS21002C gyroscope."""
@@ -115,6 +117,7 @@ class FXAS21002C:
             self._write_u8(_GYRO_REGISTER_CTRL_REG0, ctrl_reg0 + 0x01)
         elif gyro_range == GYRO_RANGE_2000DPS:
             self._write_u8(_GYRO_REGISTER_CTRL_REG0, ctrl_reg0 + 0x00)
+            
         # Reset then switch to active mode with 100Hz output
         # Putting into standy doesn't work as the chip becomes instantly
         # unresponsive.  Perhaps CircuitPython is too slow to go into standby
