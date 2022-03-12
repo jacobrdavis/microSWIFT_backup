@@ -125,7 +125,9 @@ class FXAS21002C:
         #self._write_u8(_GYRO_REGISTER_CTRL_REG1, 0x00)     # Standby)
         #self._write_u8(_GYRO_REGISTER_CTRL_REG1, (1<<6))   # Reset
         self._write_u8(_GYRO_REGISTER_CTRL_REG1, ctrl_reg1)     # Active
-        time.sleep(0.1) # 60 ms + 1/ODR
+        # time.sleep(0.1) # 60 ms + 1/ODR
+        time.sleep(0.07) # 60 ms + 1/ODR w/ ODR = 100 Hz
+
 
     def _read_u8(self, address):
         # Read an 8-bit unsigned value from the specified 8-bit address.
