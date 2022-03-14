@@ -96,6 +96,7 @@ if __name__=="__main__":
 	# IMU parameters
 	IMU_fs = config.getFloat('IMU', 'imuFreq')
 
+
 	#Compute number of bursts per hour
 	num_bursts = int(60 / burst_int)
 	
