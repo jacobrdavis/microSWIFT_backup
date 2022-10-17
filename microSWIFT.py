@@ -28,7 +28,6 @@ Log:
 	- Aug 2022, @jacobrdavis: modified telemetry queue to check payload sensorType (to support multi-sensortype queues)
 	
 TODO:
-	- telemetryQueue needs some way of knowing which SBD message it has. Possibly using len?
 	- generateHeader function for each script? (i.e. --fun.py---)
 """
 
@@ -183,7 +182,6 @@ if __name__=="__main__":
 				next_start = current_start + timedelta(minutes=burst_int)
 				
 				# Run recordGPS.py and recordIMU.py concurrently with asynchronous futures
-				#TODO: uncomment
 				with concurrent.futures.ThreadPoolExecutor() as executor:
 					# Submit Futures 
 					recordGPS_future = executor.submit(recordGPS, end_times[i])
@@ -192,7 +190,7 @@ if __name__=="__main__":
 					# get results from Futures
 					GPSdataFilename, gps_initialized = recordGPS_future.result()
 					IMUdataFilename, imu_initialized = recordIMU_future.result()
-				#TODO: uncomment 
+				
 
 				#exit out of loop once burst is finished
 				recording_complete = True
@@ -204,15 +202,8 @@ if __name__=="__main__":
 			# Time processing section
 			logger.info('Starting Processing')
 			begin_processing_time = datetime.now()
-			
-			# #---TODO: delete
-			# gps_initialized = True
-			# imu_initialized = True
-			# IMUdataFilename = '/home/pi/microSWIFT/data/microSWIFT057_IMU_17Aug2022_000146UTC.dat' #'microSWIFT043_IMU_05May2022_200006UTC.dat'#'microSWIFT021_IMU_12Jul2021_210000UTC.dat' #'microSWIFT014_IMU_27Oct2021_190006UTC.dat' 
-			# GPSdataFilename = '/home/pi/microSWIFT/data/microSWIFT057_GPS_17Aug2022_000151UTC.dat'
-			# #---TODO: delete
 				
-			if gps_initialized and imu_initialized: #gps_initialized == True and imu_initialized == True:
+			if gps_initialized and imu_initialized:
 				logger.info('GPS and IMU initialized')
 
 				# Compute u, v and z from raw GPS data
